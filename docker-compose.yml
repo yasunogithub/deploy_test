@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db_deploy:
+    image: postgres
+    volumes:
+      - postgres_deploy:/var/lib/postgresql/data
+    ports:
+      - "5449:5449"
+  web_deploy:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3300 -b '0.0.0.0'"
+    volumes:
+      - .:/myapp
+    ports:
+      - "3300:3300"
+    depends_on:
+      - db_deploy
+volumes:
+  postgres_deploy:
+    external: true
